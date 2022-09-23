@@ -17,7 +17,7 @@ CORS(app)
 !! NOTE THIS MUST BE UNCOMMENTED ON FIRST RUN
 !! Running this function will add one
 '''
-db_drop_and_create_all()
+#db_drop_and_create_all()
 
 
 # ROUTES
@@ -73,8 +73,6 @@ def patch_drink(token, id):
         if getDrink is None:
             abort(404)
         drinkData = request.get_json()
-        if 'title' and 'recipe' not in drinkData:
-            abort(400)
         if 'title' in drinkData:
             getDrink.title = drinkData['title']
         if 'recipe' in drinkData:
@@ -151,5 +149,5 @@ def auth_error(error):
     return jsonify({
         "success": False,
         "error": error.status_code,
-        "message": error
+        "message": error.error
     }), error.status_code

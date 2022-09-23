@@ -1,4 +1,6 @@
 import json
+import sys
+
 from flask import request, _request_ctx_stack, abort
 from functools import wraps
 from jose import jwt
@@ -44,7 +46,7 @@ def check_permissions(permission, payload):
     if 'permissions' not in payload:
         raise AuthError('Permissions could not be found', 404)
     if permission not in payload['permissions']:
-        raise AuthError('You do not have permission to access this resource', 401)
+        raise AuthError('You do not have permission to access this resource', 403)
     return True
 
 
@@ -90,11 +92,9 @@ def requires_auth(permission=''):
             try:
                 token = get_token_auth_header()
                 payload = verify_decode_jwt(token)
-            except:
+            except Exception:
                 raise AuthError('Authentication failed', 401)
             check_permissions(permission, payload)
             return f(payload, *args, **kwargs)
-
         return wrapper
-
     return requires_auth_decorator
